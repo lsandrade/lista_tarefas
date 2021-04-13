@@ -51,7 +51,12 @@ class _HomeState extends State<Home> {
                   child: TextField(
                     decoration: InputDecoration(
                       labelText: "Nova tarefa",
-                      labelStyle: TextStyle(color: Colors.deepPurple)
+                      labelStyle: TextStyle(color: Colors.deepPurple),
+                      focusedBorder: new UnderlineInputBorder(
+                        borderSide: new BorderSide(
+                          color: Colors.deepPurple
+                        )
+                      )
                     ),
                   ),
                 ),
