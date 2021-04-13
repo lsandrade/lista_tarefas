@@ -10,7 +10,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List _todoList = [];
+  List _todoList = [
+    {"title": "Tarefa 01", "ok": false},
+    {"title": "Tarefa 02", "ok": false},
+    {"title": "Tarefa 03", "ok": false},
+    {"title": "Tarefa 04", "ok": false},
+  ];
 
   Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -50,26 +55,33 @@ class _HomeState extends State<Home> {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      labelText: "Nova tarefa",
-                      labelStyle: TextStyle(color: Colors.deepPurple),
-                      focusedBorder: new UnderlineInputBorder(
-                        borderSide: new BorderSide(
-                          color: Colors.deepPurple
-                        )
-                      )
-                    ),
+                        labelText: "Nova tarefa",
+                        labelStyle: TextStyle(color: Colors.deepPurple),
+                        focusedBorder: new UnderlineInputBorder(
+                            borderSide:
+                                new BorderSide(color: Colors.deepPurple))),
                   ),
                 ),
                 ElevatedButton(
                   child: Text("ADD"),
                   onPressed: () => debugPrint("ADD"),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.deepPurple
-                  ),
+                  style: ElevatedButton.styleFrom(primary: Colors.deepPurple),
                 )
               ],
             ),
-          )
+          ),
+          Expanded(
+              child: ListView.builder(
+            itemBuilder: (context, index) => CheckboxListTile(
+              title: Text(_todoList[index]["title"]),
+              value: _todoList[index]["ok"],
+              secondary: CircleAvatar(
+                child: Icon(_todoList[index]["ok"] ? Icons.check : Icons.error),
+              ),
+            ),
+            padding: EdgeInsets.only(top: 10.0),
+            itemCount: _todoList.length,
+          ))
         ],
       ),
     );
