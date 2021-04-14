@@ -20,6 +20,8 @@ class _HomeState extends State<Home> {
   }
 
   List _todoList = [];
+  Map<String, dynamic> _lastRemoved;
+  int _lastRemovedPos;
 
   void _addTodo() {
     setState(() {
@@ -128,5 +130,29 @@ class _HomeState extends State<Home> {
               ),
             )),
         direction: DismissDirection.startToEnd,
+        onDismissed: (direction) {
+          setState(() {
+            _lastRemoved = Map.from(_todoList[index]);
+            _lastRemovedPos = index;
+            _todoList.removeAt(index);
+
+            _saveData();
+
+            final snack = SnackBar(
+              content: Text("Tarefa ${_lastRemoved["title"]} removida"),
+              action: SnackBarAction(
+                label: "Desfaazer",
+                onPressed: () {
+                  setState(() {
+                    _todoList.insert(_lastRemovedPos, _lastRemoved);
+                    _saveData();
+                  });
+                },
+              ),
+              duration: Duration(seconds: 2),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snack);
+          });
+        },
       );
 }
