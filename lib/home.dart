@@ -10,12 +10,24 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _todoController = TextEditingController();
+
   List _todoList = [
     {"title": "Tarefa 01", "ok": false},
     {"title": "Tarefa 02", "ok": false},
     {"title": "Tarefa 03", "ok": false},
     {"title": "Tarefa 04", "ok": false},
   ];
+
+  void _addTodo() {
+    setState(() {
+      Map<String, dynamic> newTodo = Map();
+      newTodo["title"] = _todoController.text;
+      _todoController.text = "";
+      newTodo["ok"] = false;
+      _todoList.add(newTodo);
+    });
+  }
 
   Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -54,6 +66,7 @@ class _HomeState extends State<Home> {
               children: [
                 Expanded(
                   child: TextField(
+                    controller: _todoController,
                     decoration: InputDecoration(
                         labelText: "Nova tarefa",
                         labelStyle: TextStyle(color: Colors.deepPurple),
@@ -64,7 +77,7 @@ class _HomeState extends State<Home> {
                 ),
                 ElevatedButton(
                   child: Text("ADD"),
-                  onPressed: () => debugPrint("ADD"),
+                  onPressed: () => _addTodo(),
                   style: ElevatedButton.styleFrom(primary: Colors.deepPurple),
                 )
               ],
@@ -73,11 +86,21 @@ class _HomeState extends State<Home> {
           Expanded(
               child: ListView.builder(
             itemBuilder: (context, index) => CheckboxListTile(
+              activeColor: Colors.deepPurple,
               title: Text(_todoList[index]["title"]),
               value: _todoList[index]["ok"],
               secondary: CircleAvatar(
-                child: Icon(_todoList[index]["ok"] ? Icons.check : Icons.error),
+                backgroundColor: Colors.deepPurple,
+                child: Icon(
+                  _todoList[index]["ok"] ? Icons.check : Icons.error,
+                  color: Colors.white,
+                ),
               ),
+              onChanged: (c) {
+                setState(() {
+                  _todoList[index]["ok"] = c;
+                });
+              },
             ),
             padding: EdgeInsets.only(top: 10.0),
             itemCount: _todoList.length,
