@@ -16,17 +16,10 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
 
-    _readData().then((data) => {
-      _todoList = json.decode(data)
-    });
+    _readData().then((data) => {_todoList = json.decode(data)});
   }
 
-  List _todoList = [
-    {"title": "Tarefa 01", "ok": false},
-    {"title": "Tarefa 02", "ok": false},
-    {"title": "Tarefa 03", "ok": false},
-    {"title": "Tarefa 04", "ok": false},
-  ];
+  List _todoList = [];
 
   void _addTodo() {
     setState(() {
@@ -96,24 +89,7 @@ class _HomeState extends State<Home> {
           ),
           Expanded(
               child: ListView.builder(
-            itemBuilder: (context, index) => CheckboxListTile(
-              activeColor: Colors.deepPurple,
-              title: Text(_todoList[index]["title"]),
-              value: _todoList[index]["ok"],
-              secondary: CircleAvatar(
-                backgroundColor: Colors.deepPurple,
-                child: Icon(
-                  _todoList[index]["ok"] ? Icons.check : Icons.error,
-                  color: Colors.white,
-                ),
-              ),
-              onChanged: (c) {
-                setState(() {
-                  _todoList[index]["ok"] = c;
-                  _saveData();
-                });
-              },
-            ),
+            itemBuilder: buildItem,
             padding: EdgeInsets.only(top: 10.0),
             itemCount: _todoList.length,
           ))
@@ -121,4 +97,36 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  Widget buildItem(context, index) => Dismissible(
+        key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
+        child: CheckboxListTile(
+          activeColor: Colors.deepPurple,
+          title: Text(_todoList[index]["title"]),
+          value: _todoList[index]["ok"],
+          secondary: CircleAvatar(
+            backgroundColor: Colors.deepPurple,
+            child: Icon(
+              _todoList[index]["ok"] ? Icons.check : Icons.error,
+              color: Colors.white,
+            ),
+          ),
+          onChanged: (c) {
+            setState(() {
+              _todoList[index]["ok"] = c;
+              _saveData();
+            });
+          },
+        ),
+        background: Container(
+            color: Colors.red,
+            child: Align(
+              alignment: Alignment(-0.9, 0.0),
+              child: Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+            )),
+        direction: DismissDirection.startToEnd,
+      );
 }
